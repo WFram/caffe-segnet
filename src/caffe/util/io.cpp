@@ -71,16 +71,16 @@ cv::Mat ReadImageToCVMat(const string& filename,
     const int height, const int width, const bool is_color,
     const bool nearest_neighbour_interp) {
   cv::Mat cv_img;
-  int cv_read_flag = (is_color ? CV_LOAD_IMAGE_COLOR :
-    CV_LOAD_IMAGE_GRAYSCALE);
+  int cv_read_flag = (is_color ? cv::IMREAD_COLOR :
+    cv::IMREAD_GRAYSCALE);
   cv::Mat cv_img_origin = cv::imread(filename, cv_read_flag);
   if (!cv_img_origin.data) {
     LOG(ERROR) << "Could not open or find file " << filename;
     return cv_img_origin;
   }
   if (height > 0 && width > 0) {
-    int cv_interp_flag = nearest_neighbour_interp ? CV_INTER_NN :
-                                                    CV_INTER_LINEAR;
+    int cv_interp_flag = nearest_neighbour_interp ? CV_INTER_NN : // OpenCV4.0?
+                                                    CV_INTER_LINEAR; // OpenCV4.0?
     cv::resize(cv_img_origin, cv_img, cv::Size(width, height), 0, 0,
         cv_interp_flag);
   } else {
@@ -181,8 +181,8 @@ cv::Mat DecodeDatumToCVMat(const Datum& datum, bool is_color) {
   CHECK(datum.encoded()) << "Datum not encoded";
   const string& data = datum.data();
   std::vector<char> vec_data(data.c_str(), data.c_str() + data.size());
-  int cv_read_flag = (is_color ? CV_LOAD_IMAGE_COLOR :
-    CV_LOAD_IMAGE_GRAYSCALE);
+  int cv_read_flag = (is_color ? cv::IMREAD_COLOR :
+    cv::IMREAD_GRAYSCALE);
   cv_img = cv::imdecode(vec_data, cv_read_flag);
   if (!cv_img.data) {
     LOG(ERROR) << "Could not decode datum ";
